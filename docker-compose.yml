@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+
+  timescaledb:
+    image: timescale/timescaledb:1.7.4-pg12
+    restart: unless-stopped
+    volumes: 
+      - ./.data/db:/var/lib/postgresql/data
+    env_file: .env
+    environment: 
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+    ports: 
+      - 5432:5432
+    container_name: timescaledb_demo
+    networks:
+      - default
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    ports:
+      - 8880:80
+    networks:
+      - default
+    volumes:
+      - ./pgadmin/servers.json:/servers.json
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=$PGADMIN_DEFAULT_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_DEFAULT_PASSWORD
+    container_name: pgadmin_demo
+
+networks:
+  default:
+    driver: bridge
